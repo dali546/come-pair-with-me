@@ -4,6 +4,7 @@ gem 'sinatra'
 gem 'activerecord'
 gem 'slack-ruby-bot'
 gem 'dotenv'
+gem 'puma'
 gem 'async-websocket', '~> 0.8.0'
 
 group :development, :test do

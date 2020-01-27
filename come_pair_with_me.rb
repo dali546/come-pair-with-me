@@ -1,2 +1,2 @@
 require 'slack-ruby-bot'
-require 'lib/bot'
+require './lib/bot'

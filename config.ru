@@ -1,14 +1,19 @@
 $LOAD_PATH.unshift(File.dirname(__FILE__))
-require './come_pair_with_me.rb'
+
 require 'dotenv'
-require 'rubygems'
-require 'bundler'
-require 'lib/web.rb'
-require 'lib/bot'
-
 Dotenv.load
-Bundler.require
 
-ComePairWithMe::Bot.run
+require 'come_pair_with_me'
+require 'lib/web'
+
+Thread.new do
+  begin
+    ComePairWithMe::Bot.run
+  rescue Exception => e
+    STDERR.puts "ERROR: #{e}"
+    STDERR.puts e.backtrace
+    raise e
+  end
+end
 
 run ComePairWithMe::Web
