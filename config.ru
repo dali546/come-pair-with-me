@@ -7,13 +7,11 @@ require 'come_pair_with_me'
 require 'lib/web'
 
 Thread.new do
-  begin
-    ComePairWithMe::Bot.run
-  rescue Exception => e
-    STDERR.puts "ERROR: #{e}"
-    STDERR.puts e.backtrace
-    raise e
-  end
+  ComePairWithMe::Bot.run
+rescue StandardError => e
+  warn "ERROR: #{e}"
+  warn e.backtrace
+  raise e
 end
 
 run ComePairWithMe::Web

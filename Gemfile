@@ -1,14 +1,15 @@
 source 'https://rubygems.org'
 
-gem 'sinatra'
-gem 'activerecord'
-gem 'slack-ruby-bot'
+gem 'async-websocket', '~> 0.8.0'
+gem 'clockwork', '~> 2.0'
 gem 'dotenv'
 gem 'puma'
-gem 'async-websocket', '~> 0.8.0'
+gem 'sinatra'
+gem 'slack-ruby-bot'
 
 group :development, :test do
-  gem 'rake'
   gem 'foreman'
   gem 'pry'
+  gem 'rake'
+  gem 'rubocop'
 end
