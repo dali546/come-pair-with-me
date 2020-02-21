@@ -6,6 +6,8 @@ gem 'async-websocket', '~> 0.8.0'
 gem 'bootsnap', '>= 1.4.2', require: false
 gem 'clockwork', '~> 2.0'
 gem 'dotenv'
+gem 'faraday', '~> 0.17.3'
+gem "hash_dot", "~> 2.4"
 gem 'jbuilder', '~> 2.7'
 gem 'pg', '>= 0.18', '< 2.0'
 gem 'puma'
@@ -26,5 +28,3 @@ group :development, :test do
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
 end
-
-gem 'faraday', '~> 0.17.3'
