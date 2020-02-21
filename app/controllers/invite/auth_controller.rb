@@ -27,14 +27,13 @@ module Invite
     end
 
     def create_client(response)
-      Client.create(
-        team_id: response.fetch(:team).fetch(:id),
-        team_name: response.fetch(:team).fetch(:name),
+      Client.create_with(
+        team_name: response.dig(:team, :name),
         bot_user_id: response.fetch(:bot_user_id),
         bot_access_token: response.fetch(:access_token),
-        user_id: response.fetch(:authed_user).fetch(:id),
-        user_access_token: response.fetch(:authed_user).fetch(:access_token)
-      )
+        user_id: response.dig(:authed_user, :id),
+        user_access_token: response.dig(:authed_user, :access_token)
+      ).find_or_create_by(team_id: response.dig(:team, :id))
     end
   end
 end

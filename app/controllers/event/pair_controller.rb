@@ -3,7 +3,7 @@
 module Event
   class PairController < ApplicationController
     def create
-      Client.find_by_team_id(payload[:team_id]).open_modal(payload)
+      Client.find_by_team_id(payload[:team_id]).handle_command(payload)
       head :ok
     end
 
