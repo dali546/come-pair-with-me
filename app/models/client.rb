@@ -3,12 +3,7 @@
 require "#{Rails.root}/lib/bot"
 
 class Client < ApplicationRecord
-  validates_presence_of :user_access_token
-  validates_presence_of :bot_access_token
-  validates_presence_of :bot_user_id
-  validates_presence_of :team_id
-  validates_presence_of :team_name
-  has_many :users
+  has_many :users, foreign_key: :team_id, primary_key: :team_id
 
   def bot
     @bot ||= ComePairWithMe::Bot.new(bot_access_token)

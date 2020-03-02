@@ -11,8 +11,8 @@ module ComePairWithMe
     include Commands::Slash
     include Commands::Event
 
-    attr_reader :client
-    private :client
+    attr_reader :client, :user
+    private :client, :user
 
     def initialize(token)
       Slack.configure do |config|
@@ -22,6 +22,11 @@ module ComePairWithMe
     end
 
     def handle(command, data)
+      @user = User.create_with(
+        team_id: data.dig(:team_id) || data.dig(:team, :id),
+        user_name: data.dig(:user_name) || data.dig(:user, :username)
+      ).find_or_create_by!(user_id: user_id(data))
+      p @user
       send(command, data)
     rescue Slack::Web::Api::Errors::SlackError,
            Slack::Web::Api::Errors::TooManyRequestsError => e
@@ -32,7 +37,7 @@ module ComePairWithMe
     end
 
     def user_id(payload)
-      payload.dig(:user, :id)
+      payload.dig(:user, :id) || payload.dig(:user_id)
     end
 
     def response_text(payload)
