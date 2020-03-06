@@ -23,10 +23,9 @@ module ComePairWithMe
 
     def handle(command, data)
       @user = User.create_with(
-        team_id: data.dig(:team_id) || data.dig(:team, :id),
-        user_name: data.dig(:user_name) || data.dig(:user, :username)
+        team_id: team_id(data),
+        user_name: user_name(data)
       ).find_or_create_by!(user_id: user_id(data))
-      p @user
       send(command, data)
     rescue Slack::Web::Api::Errors::SlackError,
            Slack::Web::Api::Errors::TooManyRequestsError => e
@@ -36,12 +35,22 @@ module ComePairWithMe
       raise e
     end
 
-    def user_id(payload)
-      payload.dig(:user, :id) || payload.dig(:user_id)
+    def user_name(payload)
+      payload.user_name
+    rescue => e
+      payload.dig(:user, :username)
     end
 
-    def response_text(payload)
-      payload.dig(:view, :state, :values, :pairing_message, :field_one, :value)
+    def team_id(payload)
+      payload.team_id
+    rescue => e
+      payload.dig(:team, :id)
+    end
+
+    def user_id(payload)
+       payload.user_id
+    rescue => e
+      payload.dig(:user, :id)
     end
   end
 end

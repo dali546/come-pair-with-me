@@ -11,10 +11,8 @@ Rails.application.routes.draw do
 
   namespace :commands do
     resources :leaderboard, only: :create
+    resources :pair, only: :create
   end
 
   resources :event, only: :create
-  namespace :event do
-    resources :pair, only: :create
-  end
 end

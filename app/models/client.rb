@@ -9,11 +9,15 @@ class Client < ApplicationRecord
     @bot ||= ComePairWithMe::Bot.new(bot_access_token)
   end
 
-  def handle(payload)
-    bot.handle(payload.fetch(:type), payload)
+  def handle(action, payload)
+    bot.handle(action, payload)
+  end
+
+  def handle_event(payload)
+    handle(payload.fetch(:type), payload)
   end
 
   def handle_command(payload)
-    bot.handle(payload.fetch(:command), payload)
+    handle(payload.command, payload)
   end
 end

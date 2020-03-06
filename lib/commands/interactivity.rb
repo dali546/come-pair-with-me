@@ -12,13 +12,14 @@ module ComePairWithMe
         @user.increment!(:total_points, 2)
         client.chat_postEphemeral(
           channel: payload.dig(:view, :private_metadata),
-          attachments: %([{"pretext": "pre-hello", "text": "text-world"}]),
           text: "Congrats You gained 2 points. you now have #{@user.total_points}",
           user: @user.user_id
         )
       end
 
+      #currently only means accept button.
       def block_actions(payload)
+        # if (user_who_clicked_button == user_who_posted_request)
         client.chat_update(
           channel: payload.dig(:channel, :id),
           ts: payload.dig(:message, :ts),
@@ -28,10 +29,13 @@ module ComePairWithMe
         @user.increment!(:total_points, 1)
         client.chat_postEphemeral(
           channel: payload.dig(:channel, :id),
-          attachments: %([{"pretext": "pre-hello", "text": "text-world"}]),
           text: "Congrats You gained 1 point. you now have #{@user.total_points}",
           user: @user.user_id
         )
+      end
+
+      def response_text(payload)
+        payload.dig(:view, :state, :values, :pairing_message, :field_one, :value)
       end
 
       def update_response(payload)

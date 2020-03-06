@@ -6,7 +6,7 @@ module ComePairWithMe
       module Pair
         def open_modal(payload)
           client.views_open(
-            trigger_id: payload[:trigger_id],
+            trigger_id: payload.trigger_id,
             view: modal_response(payload)
           )
         end
@@ -18,7 +18,7 @@ module ComePairWithMe
           %(
             {
               "type": "modal",
-              "private_metadata": "#{payload[:channel_id]}",
+              "private_metadata": "#{payload.channel_id}",
               "title": {
                   "type": "plain_text",
                   "text": "New Pairing Request",
@@ -51,7 +51,7 @@ module ComePairWithMe
                     "type": "plain_text_input",
                     "multiline": true,
                     "action_id": "field_one",
-                    "initial_value": "#{payload[:text]}"
+                    "initial_value": "#{payload.text}"
                   },
                   "label": {
                     "type": "plain_text",

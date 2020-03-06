@@ -7,7 +7,7 @@ module Invite
   class AuthController < ApplicationController
     def index
       response = perform_oauth
-      client = create_client(response)
+      create_client(response)
       p response
       render json: response
     end

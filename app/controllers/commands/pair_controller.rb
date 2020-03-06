@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Commands
-  class LeaderboardController < CommandController
+  class PairController < CommandController
     def create
       client.handle_command(payload)
       head :ok
