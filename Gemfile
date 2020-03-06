@@ -7,7 +7,7 @@ gem 'bootsnap', '>= 1.4.2', require: false
 gem 'clockwork', '~> 2.0'
 gem 'dotenv'
 gem 'faraday', '~> 0.17.3'
-gem "hash_dot", "~> 2.4"
+gem 'hash_dot', '~> 2.4'
 gem 'jbuilder', '~> 2.7'
 gem 'pg', '>= 0.18', '< 2.0'
 gem 'puma'

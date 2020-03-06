@@ -9,15 +9,33 @@ module ComePairWithMe
           blocks: build_response(payload),
           text: 'pairing request successful'
         )
+        @user.increment!(:total_points, 2)
+        client.chat_postEphemeral(
+          channel: payload.dig(:view, :private_metadata),
+          text: "Congrats You gained 2 points. you now have #{@user.total_points}",
+          user: @user.user_id
+        )
       end
 
+      #currently only means accept button.
       def block_actions(payload)
+        # if (user_who_clicked_button == user_who_posted_request)
         client.chat_update(
           channel: payload.dig(:channel, :id),
           ts: payload.dig(:message, :ts),
           text: 'Updated Message',
           blocks: update_response(payload)
         )
+        @user.increment!(:total_points, 1)
+        client.chat_postEphemeral(
+          channel: payload.dig(:channel, :id),
+          text: "Congrats You gained 1 point. you now have #{@user.total_points}",
+          user: @user.user_id
+        )
+      end
+
+      def response_text(payload)
+        payload.dig(:view, :state, :values, :pairing_message, :field_one, :value)
       end
 
       def update_response(payload)
@@ -27,7 +45,7 @@ module ComePairWithMe
           "type": 'section',
           "text": {
             "type": 'mrkdwn',
-            "text": "Thank you for pairing! <@#{user_id(payload)}>"
+            "text": "Thank you for pairing! <@#{@user.user_id}>"
           }
         )
         original_blocks
@@ -35,43 +53,43 @@ module ComePairWithMe
 
       def build_response(payload)
         %(
-        [
-          {
-            "type": "section",
-            "text": {
-              "type": "mrkdwn",
-              "text": "<@#{user_id(payload)}> wants to pair!"
-            }
-          },
-          {
-            "type": "divider"
-          },
-          {
-            "type": "section",
-            "text": {
-              "type": "mrkdwn",
-              "text": "Reason for pairing: #{response_text(payload)}"
-            }
-          },
-          {
-            "type": "divider"
-          },
-          {
-            "type": "actions",
-            "elements": [
-              {
-                "type": "button",
-                "text": {
-                  "type": "plain_text",
-                  "text": "Accept",
-                  "emoji": true
-                },
-                "value": "click_me_123"
+          [
+            {
+              "type": "section",
+              "text": {
+                "type": "mrkdwn",
+                "text": "<@#{@user.user_id}> wants to pair!"
               }
-            ]
-          }
-        ]
-      )
+            },
+            {
+              "type": "divider"
+            },
+            {
+              "type": "section",
+              "text": {
+                "type": "mrkdwn",
+                "text": "Reason for pairing: #{response_text(payload)}"
+              }
+            },
+            {
+              "type": "divider"
+            },
+            {
+              "type": "actions",
+              "elements": [
+                {
+                  "type": "button",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "Accept",
+                    "emoji": true
+                  },
+                  "value": "click_me_123"
+                }
+              ]
+            }
+          ]
+        )
       end
     end
   end

@@ -4,7 +4,7 @@ require 'json'
 
 class EventController < ApplicationController
   def create
-    Client.find_by_team_id(team_id).handle(payload_hash)
+    Client.find_by_team_id(team_id).handle_event(payload_hash)
     head :ok
   end
 
