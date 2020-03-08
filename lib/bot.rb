@@ -4,6 +4,7 @@ require 'slack-ruby-client'
 require_relative 'actions/command'
 require_relative 'actions/interactivity'
 require_relative 'actions/event'
+require_relative 'block_kit/components'
 
 module ComePairWithMe
   class Bot

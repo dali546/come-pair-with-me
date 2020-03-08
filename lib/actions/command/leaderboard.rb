@@ -7,40 +7,32 @@ module ComePairWithMe
         def show_leaderboard
           client.chat_postEphemeral(
             channel: data.channel_id,
-            attachments: %([{"pretext": "pre-hello", "text": "text-world"}]),
             text: 'Pair Leaderboard',
-            blocks: leaderboard_response,
+            blocks: leaderboard_response.to_json,
             user: data.user_id
           )
         end
         alias_method '/pair-leaderboard', :show_leaderboard
 
-        def top_10_leaderboard
+        def top_10
           User.where(team_id: data.team_id)
               .order(total_points: :desc).limit(10)
         end
 
         def leaderboard_response
-          response = [
-            {
-              "type": 'section',
-              "text": { "type": 'mrkdwn', "text": '*Pair Leaderboard*' }
-            },
-            {
-              "type": 'divider'
-            }
-          ]
+          [
+            BlockKit::Components::Section[text: '*Pair Leaderboard*'],
+            BlockKit::Components::Divider[]
+          ].concat(format_top_10)
+        end
 
-          top_10_leaderboard.each_with_index do |user, index|
-            response.push(
-              {
-                "type": 'section',
-                "text": { "type": 'mrkdwn', "text": "#{index + 1}. #{user.user_name} - #{user.total_points.to_i} points" }
-              },
-              "type": 'divider'
-            )
+        def format_top_10
+          top_10.flat_map.with_index do |user, index|
+            [
+              BlockKit::Components::Section[text: "#{index + 1}. #{user.user_name} - #{user.total_points.to_i} points"],
+              BlockKit::Components::Divider[]
+            ]
           end
-          response.to_json
         end
       end
     end

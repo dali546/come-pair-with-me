@@ -32,7 +32,7 @@ module ComePairWithMe
           client.chat_update(
             channel: data.channel_id,
             ts: data.message.fetch(:ts),
-            blocks: update_response
+            blocks: update_response.to_json
           )
           increase_score
         end
@@ -45,56 +45,32 @@ module ComePairWithMe
       def update_response
         original_blocks = data.message.fetch(:blocks)
         original_blocks.pop
-        original_blocks.push(
-          "type": 'section',
-          "text": {
-            "type": 'mrkdwn',
-            "text": "Thank you for pairing! <@#{user.user_id}>"
-          }
-        )
-        original_blocks
+        original_blocks + [
+          BlockKit::Components::TextField[
+            "Thank you for pairing! <@#{user.user_id}>"
+          ]
+        ]
       end
 
       def build_response
-        %(
-          [
-            {
-              "type": "section",
-              "text": {
-                "type": "mrkdwn",
-                "text": "<@#{user.user_id}> wants to pair!"
-              }
-            },
-            {
-              "type": "divider"
-            },
-            {
-              "type": "section",
-              "text": {
-                "type": "mrkdwn",
-                "text": "Reason for pairing: #{response_text}"
-              }
-            },
-            {
-              "type": "divider"
-            },
-            {
-              "type": "actions",
-              "elements": [
-                {
-                  "type": "button",
-                  "action_id": "accept_pair_request",
-                  "text": {
-                    "type": "plain_text",
-                    "text": "Accept",
-                    "emoji": true
-                  },
-                  "value": "#{user.user_id}"
-                }
+        [
+          BlockKit::Components::Section[
+            text: "<@#{user.user_id}> wants to pair!"
+          ],
+          BlockKit::Components::Divider[],
+          BlockKit::Components::Section[
+            text: "Reason for pairing: #{response_text}"
+          ],
+          BlockKit::Components::Divider[],
+          BlockKit::Components::Actions[
+            actions: [
+              BlockKit::Components::Button[
+                action_id: 'accept_pair_request',
+                text: 'Accept', value: user.user_id
               ]
-            }
+            ]
           ]
-        )
+        ]
       end
     end
   end
