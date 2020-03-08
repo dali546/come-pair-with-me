@@ -3,10 +3,6 @@
 class CommandController < ApplicationController
   private
 
-  def client
-    Client.find_by_team_id(payload.team_id)
-  end
-
   def payload
     CommandPayload.from(slash_params)
   end
