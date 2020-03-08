@@ -3,6 +3,7 @@
 require 'net/http'
 require 'uri'
 require 'faraday'
+
 module Invite
   class AuthController < ApplicationController
     def index

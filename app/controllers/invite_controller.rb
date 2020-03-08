@@ -22,8 +22,9 @@ class InviteController < ApplicationController
        mpim:read channels:manage channels:history emoji:read mpim:history
        mpim:write team:read users:read users:write&user_scope=channels:read
        chat:write groups:history groups:read groups:write identify im:history
-       im:read im:write mpim:history mpim:read mpim:write users:read users:write
-       usergroups:read channels:write channels:history calls:read calls:write].join(',')
+       im:read im:write mpim:history mpim:read mpim:write users:read
+       users:write usergroups:read channels:write channels:history calls:read
+       calls:write].join(',')
   end
 
   def img_src

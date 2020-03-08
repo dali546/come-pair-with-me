@@ -1,52 +1,49 @@
 # frozen_string_literal: true
 
 module ComePairWithMe
-  module Commands
+  module Actions
     module Interactivity
-      def view_submission(payload)
+      def view_submission
         client.chat_postMessage(
-          channel: payload.dig(:view, :private_metadata),
-          blocks: build_response(payload),
-          text: 'pairing request successful'
+          channel: data.view.fetch(:private_metadata),
+          blocks: build_response, text: 'Pairing Request Successful.'
         )
-        user.increment!(:total_points, 2)
+        increase_score(by: 2)
+      end
+
+      def increase_score(by: 1)
+        user.increment!(:total_points, by)
         client.chat_postEphemeral(
-          channel: payload.dig(:view, :private_metadata),
-          text: "Congrats You gained 2 points. you now have #{user.total_points}",
-          user: user.user_id
+          channel: data.view.fetch(:private_metadata),
+          text: "Congrats You gained 2 points. you now have #{user.total_points} points",
+          user: data.user_id
         )
       end
 
-      #currently only means accept button.
-      def block_actions(payload)
-        if (user.user_id == payload.dig(:actions, 0, :value))
+      # currently only means accept button.
+      def block_actions
+        if user.user_id == data.actions.dig(0, :value)
           client.chat_postEphemeral(
-            channel: payload.dig(:channel, :id),
+            channel: data.channel_id,
             text: "You Can't click your own button",
             user: user.user_id
           )
         else
           client.chat_update(
-            channel: payload.dig(:channel, :id),
-            ts: payload.dig(:message, :ts),
-            text: 'Updated Message',
-            blocks: update_response(payload)
+            channel: data.channel_id,
+            ts: data.message.fetch(:ts),
+            blocks: update_response
           )
-          user.increment!(:total_points, 1)
-          client.chat_postEphemeral(
-            channel: payload.dig(:channel, :id),
-            text: "Congrats You gained 1 point. you now have #{user.total_points}",
-            user: user.user_id
-          )
+          increase_score
         end
       end
 
-      def response_text(payload)
-        payload.dig(:view, :state, :values, :pairing_message, :field_one, :value)
+      def response_text
+        data.view.dig(:state, :values, :pairing_message, :field_one, :value)
       end
 
-      def update_response(payload)
-        original_blocks = payload.dig(:message, :blocks)
+      def update_response
+        original_blocks = data.message.fetch(:blocks)
         original_blocks.pop
         original_blocks.push(
           "type": 'section',
@@ -58,7 +55,7 @@ module ComePairWithMe
         original_blocks
       end
 
-      def build_response(payload)
+      def build_response
         %(
           [
             {
@@ -75,7 +72,7 @@ module ComePairWithMe
               "type": "section",
               "text": {
                 "type": "mrkdwn",
-                "text": "Reason for pairing: #{response_text(payload)}"
+                "text": "Reason for pairing: #{response_text}"
               }
             },
             {

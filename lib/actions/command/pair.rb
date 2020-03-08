@@ -1,24 +1,24 @@
 # frozen_string_literal: true
 
 module ComePairWithMe
-  module Commands
-    module Slash
+  module Actions
+    module Command
       module Pair
-        def open_modal(payload)
+        def open_modal
           client.views_open(
-            trigger_id: payload.trigger_id,
-            view: modal_response(payload)
+            trigger_id: data.trigger_id,
+            view: modal_response
           )
         end
         alias_method '/pair-with-me', :open_modal
 
         private
 
-        def modal_response(payload)
+        def modal_response
           %(
             {
               "type": "modal",
-              "private_metadata": "#{payload.channel_id}",
+              "private_metadata": "#{data.channel_id}",
               "title": {
                   "type": "plain_text",
                   "text": "New Pairing Request",
@@ -51,7 +51,7 @@ module ComePairWithMe
                     "type": "plain_text_input",
                     "multiline": true,
                     "action_id": "field_one",
-                    "initial_value": "#{payload.text}"
+                    "initial_value": "#{data.text}"
                   },
                   "label": {
                     "type": "plain_text",

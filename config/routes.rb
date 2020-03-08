@@ -14,5 +14,7 @@ Rails.application.routes.draw do
     resources :pair, only: :create
   end
 
-  resources :event, only: :create
+  resources :interactivity, only: :create
+
+  resources :events, only: :create
 end

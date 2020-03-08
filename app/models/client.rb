@@ -13,8 +13,8 @@ class Client < ApplicationRecord
     bot.handle(action, payload)
   end
 
-  def handle_event(payload)
-    handle(payload.fetch(:type), payload)
+  def handle_interactivity(payload)
+    handle(payload.type, payload)
   end
 
   def handle_command(payload)

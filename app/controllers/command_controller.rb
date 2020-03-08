@@ -4,7 +4,7 @@ class CommandController < ApplicationController
   private
 
   def payload
-    CommandPayload.from(slash_params)
+    Payloads::CommandPayload.from(slash_params)
   end
 
   def slash_params
